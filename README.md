@@ -205,82 +205,83 @@ Foram considerados o período de **2022-10-11 à 2025-10-23**
 
 * Criação de Features:
   ```
-  #Função para criação de features
-def create_features(df,date_col,close_col,vol_col,windows=(5,10,20,50,100)):
-    df = df.copy()
-    # 1) ordem temporal
-    df = df.sort_values(date_col).reset_index(drop=True)
-
-    # 2) retornos básicos
-    df['ret_1'] = df[close_col].pct_change(1)
-    df["ret_5d"]  = df[close_col].pct_change(5)
-    df["ret_10d"] = df[close_col].pct_change(10)
-
-
-    # 3) médias e EMAs multijanelas
-    for w in windows:
-        df[f'mm_{w}']  = df[close_col].rolling(window=w, min_periods=w).mean()
-        df[f'ema_{w}'] = df[close_col].ewm(span=w, adjust=False).mean()
-        # spread preço - média
-        df[f'spread_mm{w}'] = df[close_col] - df[f'mm_{w}']
-        # MÉDIA de volume
-        
-        df[f'volm_{w}'] = df[vol_col].rolling(window=w, min_periods=w).mean()
-
-    # 4) relações preço vs média (com eps para evitar div/0)
-    eps = 1e-9
-    for w in windows:
-        df[f'close_over_mm{w}'] = (df[close_col] / (df[f'mm_{w}'] + eps)) - 1
-
-    # 5) momentums multijanelas
-    for k in (3,5,10):
-        df[f'momentum_{k}'] = df[close_col].pct_change(k)
-
-    # 6) Var% como numérico e shifts
-    
-    df['var_shift_1'] = df['Var%'].shift(1)
-    df['var_shift_2'] = df['Var%'].shift(2)
-    df['var_shift_3'] = df['Var%'].shift(3)
-
-    # 7) razão de volume curto/longo 
-    if all(f'volm_{w}' in df for w in (5,20)):
-        base = df['volm_20'].replace(0, np.nan)
-        df['vol_ratio_5_20'] = (df['volm_5'] / base)
-
-
-
-    # Bandas de Bollinger (20 dias, 2 desvios)
-    w=20
-    std = df[close_col].rolling(w).std()
-    ma=df['mm_20']
-    df["bb_width"] = ((ma + 2*std) - (ma - 2*std)) / ma
-
-    #Função para cálculo do RSI
-    def compute_rsi(series, window=14):
-        delta = series.diff()
-        up = np.where(delta > 0, delta, 0.0)
-        down = np.where(delta < 0, -delta, 0.0)
-        roll_up = pd.Series(up, index=series.index).rolling(window).mean()
-        roll_down = pd.Series(down, index=series.index).rolling(window).mean()
-        rs = roll_up / roll_down.replace(0, np.nan)
-        return 100.0 - (100.0 / (1.0 + rs))
-
-    df["rsi_14"] = compute_rsi(df[close_col], 14)
-    df['Target'] = df[close_col].shift(-1)
-    
-    print("Quantidade de valores nulos após criação de features:")
-    print(df.isna().sum().sum())
-    df = df.dropna().reset_index(drop=True)
-    print('-'*64)
-    print("Quantidade de linhas após remoção dos nulos:")
-    print(len(df))
-    print('-'*64)
-
-    return df
+  
+ def create_features(df,date_col,close_col,vol_col,windows=(5,10,20,50,100)):
+     df = df.copy()
+     # 1) ordem temporal
+     df = df.sort_values(date_col).reset_index(drop=True)
+ 
+     # 2) retornos básicos
+     df['ret_1'] = df[close_col].pct_change(1)
+     df["ret_5d"]  = df[close_col].pct_change(5)
+     df["ret_10d"] = df[close_col].pct_change(10)
+ 
+ 
+     # 3) médias e EMAs multijanelas
+     for w in windows:
+         df[f'mm_{w}']  = df[close_col].rolling(window=w, min_periods=w).mean()
+         df[f'ema_{w}'] = df[close_col].ewm(span=w, adjust=False).mean()
+         # spread preço - média
+         df[f'spread_mm{w}'] = df[close_col] - df[f'mm_{w}']
+         # MÉDIA de volume
+         
+         df[f'volm_{w}'] = df[vol_col].rolling(window=w, min_periods=w).mean()
+ 
+     # 4) relações preço vs média (com eps para evitar div/0)
+     eps = 1e-9
+     for w in windows:
+         df[f'close_over_mm{w}'] = (df[close_col] / (df[f'mm_{w}'] + eps)) - 1
+ 
+     # 5) momentums multijanelas
+     for k in (3,5,10):
+         df[f'momentum_{k}'] = df[close_col].pct_change(k)
+ 
+     # 6) Var% como numérico e shifts
+     
+     df['var_shift_1'] = df['Var%'].shift(1)
+     df['var_shift_2'] = df['Var%'].shift(2)
+     df['var_shift_3'] = df['Var%'].shift(3)
+ 
+     # 7) razão de volume curto/longo 
+     if all(f'volm_{w}' in df for w in (5,20)):
+         base = df['volm_20'].replace(0, np.nan)
+         df['vol_ratio_5_20'] = (df['volm_5'] / base)
+ 
+ 
+ 
+     # Bandas de Bollinger (20 dias, 2 desvios)
+     w=20
+     std = df[close_col].rolling(w).std()
+     ma=df['mm_20']
+     df["bb_width"] = ((ma + 2*std) - (ma - 2*std)) / ma
+ 
+     #Função para cálculo do RSI
+     def compute_rsi(series, window=14):
+         delta = series.diff()
+         up = np.where(delta > 0, delta, 0.0)
+         down = np.where(delta < 0, -delta, 0.0)
+         roll_up = pd.Series(up, index=series.index).rolling(window).mean()
+         roll_down = pd.Series(down, index=series.index).rolling(window).mean()
+         rs = roll_up / roll_down.replace(0, np.nan)
+         return 100.0 - (100.0 / (1.0 + rs))
+ 
+     df["rsi_14"] = compute_rsi(df[close_col], 14)
+     df['Target'] = df[close_col].shift(-1)
+     
+     print("Quantidade de valores nulos após criação de features:")
+     print(df.isna().sum().sum())
+     df = df.dropna().reset_index(drop=True)
+     print('-'*64)
+     print("Quantidade de linhas após remoção dos nulos:")
+     print(len(df))
+     print('-'*64)
+ 
+     return df
 * 
 
 
 *   ``
 *   
 * 
+
 
