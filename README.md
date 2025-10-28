@@ -163,6 +163,7 @@ Foram considerados o período de **2022-10-11 à 2025-10-23**
     ```
         
         df['Data']=pd.to_datetime(df['Data'],format='%d.%m.%Y')
+   ```
 * Conversão de `Vol.` para numero:
 
      ```
@@ -179,6 +180,7 @@ Foram considerados o período de **2022-10-11 à 2025-10-23**
           return None
 
      df['Vol.'] = df['Vol.'].apply(converter_valor_volume)
+    ```
     
 * Conversão `Var%` de string com % para float
   ```
@@ -193,23 +195,198 @@ Foram considerados o período de **2022-10-11 à 2025-10-23**
         return np.nan
 
   df['Var%'] = df['Var%'].apply(converter_percentual)
+  ```
 
 * Criação de colunas de datas
     ```
   df['ano']=df['Data'].dt.year
   df['mes']=df['Data'].dt.month
-  df['dow']=df['Data'].dt.day_of_week
+  df['day_of_week']=df['Data'].dt.day_of_week
   df['Anomes']=df['Data'].dt.strftime('%m.%y')
+    ```
+
+
+### Exploração dos dados
+
+* Visualização descritiva do dataframe após correção de variaveis
+
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+      <th>mean</th>
+      <th>min</th>
+      <th>25%</th>
+      <th>50%</th>
+      <th>75%</th>
+      <th>max</th>
+      <th>std</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Data</th>
+      <td>959</td>
+      <td>2023-11-26 14:57:56.120959232</td>
+      <td>2021-12-27 00:00:00</td>
+      <td>2022-12-10 12:00:00</td>
+      <td>2023-11-27 00:00:00</td>
+      <td>2024-11-06 12:00:00</td>
+      <td>2025-10-24 00:00:00</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Último</th>
+      <td>959.0</td>
+      <td>120.914576</td>
+      <td>96.121</td>
+      <td>111.544</td>
+      <td>120.586</td>
+      <td>129.601</td>
+      <td>146.492</td>
+      <td>11.70048</td>
+    </tr>
+    <tr>
+      <th>Abertura</th>
+      <td>959.0</td>
+      <td>120.871945</td>
+      <td>96.119</td>
+      <td>111.4645</td>
+      <td>120.561</td>
+      <td>129.528</td>
+      <td>146.492</td>
+      <td>11.683371</td>
+    </tr>
+    <tr>
+      <th>Máxima</th>
+      <td>959.0</td>
+      <td>121.76771</td>
+      <td>96.971</td>
+      <td>112.5285</td>
+      <td>121.607</td>
+      <td>130.1425</td>
+      <td>147.578</td>
+      <td>11.614397</td>
+    </tr>
+    <tr>
+      <th>Mínima</th>
+      <td>959.0</td>
+      <td>120.038944</td>
+      <td>95.267</td>
+      <td>110.3985</td>
+      <td>120.022</td>
+      <td>128.7335</td>
+      <td>146.067</td>
+      <td>11.796513</td>
+    </tr>
+    <tr>
+      <th>Vol.</th>
+      <td>959.0</td>
+      <td>1981453514.077164</td>
+      <td>4330000.0</td>
+      <td>9945000.0</td>
+      <td>12310000.0</td>
+      <td>17455000.0</td>
+      <td>24870000000.0</td>
+      <td>3981848092.265336</td>
+    </tr>
+    <tr>
+      <th>Var%</th>
+      <td>959.0</td>
+      <td>0.000402</td>
+      <td>-0.0335</td>
+      <td>-0.0058</td>
+      <td>0.0003</td>
+      <td>0.0069</td>
+      <td>0.0554</td>
+      <td>0.010604</td>
+    </tr>
+    <tr>
+      <th>ano</th>
+      <td>959.0</td>
+      <td>2023.422315</td>
+      <td>2021.0</td>
+      <td>2022.0</td>
+      <td>2023.0</td>
+      <td>2024.0</td>
+      <td>2025.0</td>
+      <td>1.105104</td>
+    </tr>
+    <tr>
+      <th>mes</th>
+      <td>959.0</td>
+      <td>6.296142</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>9.0</td>
+      <td>12.0</td>
+      <td>3.345126</td>
+    </tr>
+    <tr>
+      <th>dow</th>
+      <td>959.0</td>
+      <td>1.995829</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.414207</td>
+    </tr>
+    <tr>
+      <th>day_of_week</th>
+      <td>959.0</td>
+      <td>1.995829</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>1.414207</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+` Identificamos movimento irregular na variavel de volume, com grande valor de desvio padrão `
+
+### * Entendendo melhor as variáveis
+
+* <img width="990" height="790" alt="image" src="https://github.com/user-attachments/assets/94f2800d-3345-42d2-925c-6082404ffc1c" />
+
+
+  * **1.Distribuição por Volume de Negócios**: Valores com alguma irregularidade reforçando o que notamos anteriormente olhando o desvio padrão 
+  * **2.Distribuição de Variação Percentual (%)**: Podemos notar uma distribuição normal dos dados
+  * **3.Distribuição de Último Preço**: Também notamos uma distribuição normal do preço, sem grandes outliers
+  * **4.Correlação de variaveis com Último Preço**: Nota-se uma correlação muito forte entre as variaveis de valores (Abertura, Minima, Máxima)
+
+ 
+ 
+
 
 ### Engenharia de atributos
 
 * Criação de Features:
   ```
+  def create_features(df,date_col,close_col,vol_col,windows=(5,10,20,50,100)):
+       """Cria features técnicas para análise de séries temporais financeiras.
+    Parâmetros:
+    df: DataFrame contendo os dados financeiros.
+    date_col: Nome da coluna de datas.
+    close_col: Nome da coluna de preços de fechamento.
+    vol_col: Nome da coluna de volume.
+    windows: Tupla de janelas para cálculo de médias móveis e outros indicadores.
+    Retorna:
+    DataFrame com as novas features criadas."""
+
   
- def create_features(df,date_col,close_col,vol_col,windows=(5,10,20,50,100)):
-     df = df.copy()
-     # 1) ordem temporal
-     df = df.sort_values(date_col).reset_index(drop=True)
+      df = df.copy()
+      # 1) ordem temporal
+      df = df.sort_values(date_col).reset_index(drop=True)
  
      # 2) retornos básicos
      df['ret_1'] = df[close_col].pct_change(1)
@@ -277,11 +454,50 @@ Foram considerados o período de **2022-10-11 à 2025-10-23**
      print('-'*64)
  
      return df
-* 
 
 
-*   ``
-*   
-* 
+  df=create_features(df,'Data','Último','Vol.',windows=(5,10,20,50,75,100,150,200))
+  ```
+  
+* Seleção de features:
+ ```
+ def select_features(train,test,target1=['Target','Último'],target='Target',k=10):
+    feature_cols=[col for col in train.columns if col not in target1 and col != 'Data' ]
+    train = train[feature_cols + target1].dropna()
+    test = test[feature_cols].dropna()
+    X_train = train[feature_cols]
+    X_test = test[feature_cols]
+    y_train = train[target]
+    
+    X_train.dropna(inplace=True)
+    def build_regression_selector(feature_cols, k=10):
+        return Pipeline(steps=[
+        ("scaler", StandardScaler()),
+        ("selector", SelectKBest(score_func=f_regression, k=k)),
+        ("model", Ridge())
+    ])
+
+    
+    tscv = TimeSeriesSplit(n_splits=5)
+    pipe = build_regression_selector(feature_cols, k=10)
+
+   
+    param_grid = {
+        "selector__k": [5, 10, 15, 20],
+        "model__alpha": [0.1, 1.0, 5.0, 10.0]
+}
+    g = GridSearchCV(pipe, param_grid, cv=tscv, scoring="neg_mean_absolute_error")
+    g.fit(X_train, y_train)
+
+    mask = g.best_estimator_.named_steps["selector"].get_support()
+    selected_features = list(X_train.columns[mask])
+
+   
+    print("Selected Features:", selected_features)
+    return selected_features
+ ```
+<img width="630" height="470" alt="image" src="https://github.com/user-attachments/assets/39cdbabc-fe80-4536-a59b-29ee323ebd64" />
+
+<img width="1005" height="547" alt="image" src="https://github.com/user-attachments/assets/d6a904ac-22a0-4db7-b8e0-f6b0088add30" />
 
 
