@@ -998,18 +998,19 @@ Acurácia do modelo Prophet Simples: 0.8620689655172413
 Acurácia Balanceada do modelo Prophet Simples: 0.8677884615384616
 <img width="528" height="432" alt="image" src="https://github.com/user-attachments/assets/4f903957-e8a3-4ea4-a8df-16d8ced2cbd8" />
 
-  Modelo Prophet:
+  Modelo Prophet com Hyperparametrização:
 ```python
-cm_prophet = confusion_matrix(real_up[1:], prophet_up[1:])
-cm_prophet_display = ConfusionMatrixDisplay(cm_prophet, display_labels=["Baixa", "Alta"])
-print(f"Acurácia do modelo Prophet Simples: {accuracy_score(real_up[1:], prophet_up[1:])}")
-print(f"Acurácia Balanceada do modelo Prophet Simples: {balanced_accuracy_score(real_up[1:], prophet_up[1:])}")
-cm_prophet_display.plot(cmap="Blues");
+print(f"Acurácia do modelo Prophet Otimizado: {accuracy_score(real_up[1:], prophet2_up[1:])}")
+print(f"Acurácia Balanceada do modelo Prophet Otimizado: {balanced_accuracy_score(real_up[1:], prophet2_up[1:])}")
+cm_prophet2 = confusion_matrix(real_up[1:], prophet2_up[1:])
+cm_prophet2_display = ConfusionMatrixDisplay(cm_prophet2, display_labels=["Baixa", "Alta"])
+cm_prophet2_display.plot(cmap="Blues");
 
 ```
 Acurácia do modelo Prophet Simples: 0.8620689655172413
 Acurácia Balanceada do modelo Prophet Simples: 0.8677884615384616
-<img width="528" height="432" alt="image" src="https://github.com/user-attachments/assets/4f903957-e8a3-4ea4-a8df-16d8ced2cbd8" />
+
+<img width="528" height="432" alt="image" src="https://github.com/user-attachments/assets/de1b789a-6315-4dc5-b37f-6f5440beab53" />
 
 ---
 ### Confiabilidade
@@ -1030,4 +1031,5 @@ O modelo é considerado aceitável se:
 
   
      
+
 
